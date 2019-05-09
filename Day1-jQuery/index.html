@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>GPA</title>
-    <link rel="stylesheet" href="style.css">
+    <title>GPA-jQuery Version</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Sofia|Ubuntu|Dancing+Script" rel="stylesheet">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="index.js"></script>
 </head>
 
@@ -43,12 +47,13 @@
 
         <tr>
             <td>
-                <input type="button" value='Submit' name="submit" id='submit'
-                    onclick="getInfoStudent()" />
+                <button class="student-submit">Submit</button>
             </td>
         </tr>
 
     </table>
+
+    <p>A student has been added to the table</p>
 
     <table id="student-table">
         <tr>
@@ -57,7 +62,6 @@
             <th>GPA</th>
         </tr>
     </table>
-
 </body>
 
 </html>

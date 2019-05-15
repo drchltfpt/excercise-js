@@ -4,39 +4,27 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 
-const router = express.Router();
-
-const xlsx = require('node-xlsx').default;
-// Get data from excel file
-const workSheetsFromBuffer = xlsx.parse(fs.readFileSync(`${__dirname}/Student-GPA.xlsx`));
+// const xlsx = require('node-xlsx').default;
+// // Get data from excel file
+// const workSheetsFromBuffer = xlsx.parse(fs.readFileSync(`${__dirname}/Student-GPA.xlsx`));
 
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    res.status(200); // receive request success
-    res.send('Hello this is router /');
-});
-
-app.get('/index', (req, res) => {
     const indexPath = path.resolve(__dirname, './views/index.html');
     // response to client
     res.status(200).sendFile(indexPath);// receive request success and send file index.html
 });
 
-// response data array from excel file
-app.post('/index', (req, res) => {
-    res.send(workSheetsFromBuffer);
-});
-
-
+const xlsx = require('node-xlsx');
 var busboy = require('connect-busboy');
 app.use(busboy());
 var bodyParser = require('body-parser');
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.route('/upload')
     .post(function (req, res, next) {
@@ -58,12 +46,10 @@ app.route('/upload')
             });
         });
     });
-
 async function parseExcel(path) {
     const workSheetsFromFile = await xlsx.parse(path);
     return workSheetsFromFile[0].data;
 }
-
 
 app.get('*', (req, res) => {
     res.send('404 Not found');

@@ -29,185 +29,23 @@ class Student {
     };
 }
 
-$(document).ready(function () {
-
-    document.querySelector('#file-upload').addEventListener('change', function (e) {
-        e.preventDefault();
-        let xhr = new XMLHttpRequest();
-        let formData = new FormData();
-        let excelFile = e.target.files[0];
-        formData.append("excel", excelFile);
-
-        xhr.open("POST", '/upload');
-        xhr.send(formData);
-        xhr.onreadystatechange = (e) => {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                let studentList = JSON.parse("[" + xhr.responseText + "]");
-                console.log(studentList[0][0]);
-                try {
-                    for (i = 1; i < studentList[0].length; i++) {
-                        let sv = studentList[0][i];
-                        const name = sv[0];
-                        Validator.validateName(name);
-                        const mathGrade = parseFloat(sv[1]);
-                        Validator.validateMathGrade(mathGrade);
-                        const physGrade = parseFloat(sv[2]);
-                        Validator.validatePhysicalGrade(physGrade);
-                        const chemGrade = parseFloat(sv[3]);
-                        Validator.validateChemistryGrade(chemGrade);
-    
-                        // Condition checking data after create an Student object
-                        const student = new Student();
-    
-                        const studentGpa = student.calculateGpa(mathGrade, physGrade, chemGrade);
-    
-                        const studentRanking = student.ranking(studentGpa);
-    
-                        // Pushing information student object to a list
-                        studentListDisplay.push({
-                            name: name,
-                            rank: studentRanking,
-                            gpa: studentGpa
-                        });
-    
-    
-                    }
-    
-                    $("button").animate({
-                        height: "40px",
-                        width: "120px",
-                        backgroundColor: "yellow",
-                    }).animate({
-                        height: "30px",
-                        width: "100px",
-                    });
-        
-                    $("h1").animate({
-                        fontSize: "50px",
-                    }, "slow").animate({
-                        fontSize: "35px",
-                    }, "slow");
-    
-                    // Display title of rows
-                    $("#student-table").fadeIn("slow");
-    
-                    // Display notification for add a new student to the table
-                    $("#notify-upload").fadeOut("slow");
-    
-                    studentsAdd(studentListDisplay);
-                }
-                catch (error) {
-                    switch (error.type) {
-                        case 'Empty':
-                            alert(error.message);
-                            break;
-                        case "Invalid":
-                            alert(error.message);
-                            break;
-                    }
-                }
-
-            }
-        }
-    });
-
-    // Main function process submit button
-    $(".student-submit").click(function getInfoStudent() {
-
-        try {
-            const name = $("#name").val();
-            Validator.validateName(name);
-            const mathGrade = parseFloat($("#math").val());
-            Validator.validateMathGrade(mathGrade);
-            const physGrade = parseFloat($("#phys").val());
-            Validator.validatePhysicalGrade(physGrade);
-            const chemGrade = parseFloat($("#chem").val());
-            Validator.validateChemistryGrade(chemGrade);
-
-            $("button").animate({
-                height: "40px",
-                width: "120px",
-                backgroundColor: "yellow",
-            }).animate({
-                height: "30px",
-                width: "100px",
-            });
-
-            $("h1").animate({
-                fontSize: "50px",
-            }, "slow").animate({
-                fontSize: "35px",
-            }, "slow");
-
-            // Display title of rows
-            $("#student-table").fadeIn("slow");
-    
-            // Display notification for add a new student to the table
-            $("#notify-upload").fadeOut("slow");
-
-            // Condition checking data after create an Student object
-
-            const student = new Student();
-
-            const studentGpa = student.calculateGpa(mathGrade, physGrade, chemGrade);
-
-            const studentRanking = student.ranking(studentGpa);
-
-            // Showing GPA
-            $("#gpa").text(studentGpa);
-
-            // Showing Rank
-            $("#rank").text(studentRanking);
-
-            // Display title of rows
-            $("#student-table").fadeIn("slow");
-
-            // Pushing information student object to a list
-            studentList.push({
-                name: name,
-                rank: studentRanking,
-                gpa: studentGpa
-            });
-
-            // Display notification for add a new student to the table
-            $("p").animate({
-                fontSize: "15px",
-            }, "slow").fadeIn("slow").fadeOut("slow");
-
-            // Showing list in table
-            studentsAddColumn(name,studentRanking, studentGpa);
-
-            resetForm();
-
-            return student;
-
-        }
-        catch (error) {
-            switch (error.type) {
-                case 'Empty':
-                    alert(error.message);
-                    break;
-                case "Invalid":
-                    alert(error.message);
-                    break;
-            }
-        }
-
-    });
-
-
-});
-
 // Function reset Grade Point Average form
 function resetForm() {
     $("input").val("");
 }
 
-// Function add student to the table 
+// Function add a student to the table 
 function studentsAddColumn(name, rank, gpa) {
 
     if ($("#student-table tbody").length == 0) {
-        $("#student-table").append("<tbody></tbody>");
+        $("#student-table").append(
+            "<tbody>" +
+            "<tr>" +
+            "<th>Student Name</th>" +
+            "<th>Ranking</th>" +
+            "<th>GPA</th>" +
+            "</tr>" +
+            "</tbody>");
     }
 
     $("#student-table tbody").append(
@@ -219,13 +57,21 @@ function studentsAddColumn(name, rank, gpa) {
     );
 }
 
-// Function add student to the table 
+// Function add list student to the table 
 function studentsAdd(studentList) {
 
-    if ($("#student-table tbody").length == 0) {
-        $("#student-table").append("<tbody></tbody>");
+    if ($("#student-table tbody").length > 0) {
+        $("#student-table tbody").remove();
     }
 
+    $("#student-table").append(
+        "<tbody>" +
+        "<tr>" +
+        "<th>Student Name</th>" +
+        "<th>Ranking</th>" +
+        "<th>GPA</th>" +
+        "</tr>" +
+        "</tbody>");
     for (i = 0; i < studentList.length; i++) {
         $("#student-table tbody").append(
             "<tr>" +
@@ -233,7 +79,7 @@ function studentsAdd(studentList) {
             "<td>" + studentList[i].rank + "</td>" +
             "<td>" + studentList[i].gpa + "</td>" +
             "</tr>"
-        );
+        ).fadeIn("slow");
     }
 
 }
@@ -330,6 +176,175 @@ class Validator {
 
 }
 
+$(document).ready(() => {
 
+    // Processing event click on Upload button
+    document.querySelector('#file-upload').addEventListener('change', (e) => {
+        e.preventDefault();
 
+        let xhr = new XMLHttpRequest();
+        let formData = new FormData();
+        let excelFile = e.target.files[0];
+        formData.append("excel", excelFile);
 
+        xhr.open("POST", '/upload');
+        xhr.send(formData);
+        xhr.onreadystatechange = (e) => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let studentList = JSON.parse("[" + xhr.responseText + "]");
+                console.log(studentList[0][0]);
+                try {
+                    for (i = 1; i < studentList[0].length; i++) {
+                        let sv = studentList[0][i];
+                        const name = sv[0];
+                        Validator.validateName(name);
+                        const mathGrade = parseFloat(sv[1]);
+                        Validator.validateMathGrade(mathGrade);
+                        const physGrade = parseFloat(sv[2]);
+                        Validator.validatePhysicalGrade(physGrade);
+                        const chemGrade = parseFloat(sv[3]);
+                        Validator.validateChemistryGrade(chemGrade);
+
+                        // Condition checking data after create an Student object
+                        const student = new Student();
+
+                        const studentGpa = student.calculateGpa(mathGrade, physGrade, chemGrade);
+
+                        const studentRanking = student.ranking(studentGpa);
+
+                        // Pushing information student object to a list
+                        studentListDisplay.push({
+                            name: name,
+                            rank: studentRanking,
+                            gpa: studentGpa
+                        });
+
+                    }
+
+                    Promise.all([
+                        $("h1").animate({
+                            fontSize: "50px",
+                        }, "slow"),
+                        $("h1").animate({
+                            fontSize: "35px",
+                        }, "slow"),
+                        $("button").animate({
+                            height: "40px",
+                            width: "120px",
+                        }),
+                        $("button").animate({
+                            height: "30px",
+                            width: "100px",
+                        }),
+                        // Display data table
+                        $("#student-table").fadeIn("slow"),
+                        // Display notification for add a new student to the table
+                        $("#notify-success").animate({
+                            fontSize: "15px",
+                        }, "slow").fadeIn("slow").fadeOut("slow"),
+
+                    ])
+
+                    studentsAdd(studentListDisplay);
+                    studentListDisplay.length = 0;
+                }
+                catch (error) {
+                    switch (error.type) {
+                        case 'Empty':
+                            alert(error.message);
+                            break;
+                        case "Invalid":
+                            alert(error.message);
+                            break;
+                    }
+                }
+
+            }
+        }
+    });
+
+    // Annimation of submit button
+    $(".student-submit").click(() => {
+        Promise.all([
+            $("h1").animate({
+                fontSize: "50px",
+            }, "slow"),
+            $("h1").animate({
+                fontSize: "35px",
+            }, "slow"),
+            $("button").animate({
+                height: "40px",
+                width: "120px",
+            }),
+            $("button").animate({
+                height: "30px",
+                width: "100px",
+            }),
+
+        ]);
+    });
+
+    // Main function process submit button
+    $(".student-submit").click(function getInfoStudent() {
+
+        try {
+            const name = $("#name").val();
+            Validator.validateName(name);
+            const mathGrade = parseFloat($("#math").val());
+            Validator.validateMathGrade(mathGrade);
+            const physGrade = parseFloat($("#phys").val());
+            Validator.validatePhysicalGrade(physGrade);
+            const chemGrade = parseFloat($("#chem").val());
+            Validator.validateChemistryGrade(chemGrade);
+
+            Promise.all([
+                // Display data table
+                $("#student-table").fadeIn("slow"),
+
+                // Display notification for add a new student to the table
+                $("#notify-success").animate({
+                    fontSize: "15px",
+                }, "slow").fadeIn("slow").fadeOut("slow"),
+            ]);
+
+            // Condition checking data after create an Student object
+            const student = new Student();
+
+            const studentGpa = student.calculateGpa(mathGrade, physGrade, chemGrade);
+
+            const studentRanking = student.ranking(studentGpa);
+
+            // Showing GPA
+            $("#gpa").text(studentGpa);
+
+            // Showing Rank
+            $("#rank").text(studentRanking);
+
+            // Pushing information student object to a list
+            studentList.push({
+                name: name,
+                rank: studentRanking,
+                gpa: studentGpa
+            });
+
+            // Showing list in table
+            studentsAddColumn(name, studentRanking, studentGpa);
+            resetForm();
+            studentList.length = 0;
+            return student;
+
+        }
+        catch (error) {
+            switch (error.type) {
+                case 'Empty':
+                    alert(error.message);
+                    break;
+                case "Invalid":
+                    alert(error.message);
+                    break;
+            }
+        }
+
+    });
+
+});

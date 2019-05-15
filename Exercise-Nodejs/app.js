@@ -17,14 +17,9 @@ app.get('/', (req, res) => {
 });
 
 const xlsx = require('node-xlsx');
+
 var busboy = require('connect-busboy');
 app.use(busboy());
-var bodyParser = require('body-parser');
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// parse application/json
-app.use(bodyParser.json());
 
 app.route('/upload')
     .post(function (req, res, next) {

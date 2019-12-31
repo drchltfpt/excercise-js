@@ -1,24 +1,38 @@
 * {
   margin: 0 auto;
   padding: 0 auto;
+  font-family: Ubuntu;
 }
 
 h1 {
   color: orange;
+  font-family: Sofia;
   text-align: center;
+}
+
+p {
+  text-align: center;
+  color: red;
+  font-size: 0px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 table {
   margin: 0 auto;
+  padding-bottom: 10px;
 }
 
 input {
   border-radius: 5px;
+  height: 25px;
 }
 
 #student-table {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
+  display: none;
+  padding-top: 120px;
 }
 
 #student-table td, #student-table th {
@@ -40,4 +54,11 @@ input {
   text-align: left;
   background-color: orange;
   color: white;
+}
+
+.student-submit {
+  border-radius: 10px;
+  height: 30px;
+  width: 100px;
+  background-color: green;
 }

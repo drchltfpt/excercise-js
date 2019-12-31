@@ -13,191 +13,210 @@ class Student {
 
         switch (true) {
             case studentGpa >= 8:
-                return "Excellence";
+                return 'Excellence';
             case studentGpa >= 6.5:
-                return "Good";
+                return 'Good';
             case studentGpa >= 5:
-                return "Pass";
+                return 'Pass';
             case studentGpa < 5:
-                return "Not pass";
+                return 'Not pass';
         }
     };
 }
 
-class Validator {
 
-    // Function checking valid student name
-    static validateName(name) {
-        const regexName = /^[a-zA-Z ]+$/;
-
-        if (!name) {
-            const error = new Error('Please enter a student name');
-            error.type = 'Empty';
-            throw error;
-        }
-
-        if (!regexName.test(name)) {
-            const error = new Error('Please enter a valid student name');
-            error.type = 'Invalid';
-            throw error;
-        }
-    }
-
-    // Function checking valid student grade (re-use)
-    static isValidGrade(grade) {
-        const regexNum = /^\d+$/;
-        if (!grade) {
-            return false;
-        }
-
-        if (!regexNum.test(grade)) {
-            return false;
-        }
-
-        if (grade <= 0 || grade >= 10) {
-            return false;
-        }
-
-        return true;
-    };
-
-    // Function checking valid student math grade
-    static validateMathGrade(grade) {
-        if (!grade) {
-            const error = new Error('Please enter Math grade !!!');
-            error.type = 'Empty';
-            throw error;
-        }
-
-        if (!this.isValidGrade(grade)) {
-            const error = new Error('Please enter a valid Math grade');
-            error.type = 'Invalid';
-            throw error;
-        }
-    }
-
-    // Function checking valid student physical grade
-    static validatePhysicalGrade(grade) {
-        if (!grade) {
-            const error = new Error('Please enter Physical grade !!!');
-            error.type = 'Empty';
-            throw error;
-        }
-
-        if (!this.isValidGrade(grade)) {
-            const error = new Error('Please enter a valid Physical grade');
-            error.type = 'Invalid';
-            throw error;
-        }
-    }
-
-    // Function checking valid student chemistry grade
-    static validateChemicalGrade(grade) {
-        if (!grade) {
-            const error = new Error('Please enter Chemical grade !!!');
-            error.type = 'Empty';
-            throw error;
-        }
-
-        if (!this.isValidGrade(grade)) {
-            const error = new Error('Please enter a valid Chemical grade');
-            error.type = 'Invalid';
-            throw error;
-        }
-    }
-
-}
-
-// Main function process submit button
 $(document).ready(function () {
     // Main function process submit button
-    $("#submit").click(function getInfoStudent() {
+    $("button").click(function getInfoStudent() {
 
         try {
-
-            // Get and validate data 
-            const name = document.getElementById("name").value;
+            const name = $("#name").val();
             Validator.validateName(name);
-            const mathGrade = parseFloat(document.getElementById("math").value);
+            const mathGrade = parseFloat($("#math").val());
             Validator.validateMathGrade(mathGrade);
-            const physGrade = parseFloat(document.getElementById("phys").value);
+            const physGrade = parseFloat($("#phys").val());
             Validator.validatePhysicalGrade(physGrade);
-            const chemGrade = parseFloat(document.getElementById("chem").value);
-            Validator.validateChemicalGrade(chemGrade);
+            const chemGrade = parseFloat($("#chem").val());
+            Validator.validateChemistryGrade(chemGrade);
+
+            $("button").animate({
+                height: "40px",
+                width: "120px",
+                backgroundColor: "yellow",
+            }).animate({
+                height: "30px",
+                width: "100px",
+            });
+
+            $("h1").animate({
+                fontSize: "50px",
+            }, "slow").animate({
+                fontSize: "35px",
+            }, "slow");
+
+            // Condition checking data after create an Student object
 
             const student = new Student();
 
-            const studentGPA = student.calculateGpa(mathGrade, physGrade, chemGrade);
+            const studentGpa = student.calculateGpa(mathGrade, physGrade, chemGrade);
 
-            const studentRank = student.ranking(studentGPA);
+            const studentRanking = student.ranking(studentGpa);
 
             // Showing GPA
-            document.getElementById("gpa").innerText = studentGPA;
+            $("#gpa").text(studentGpa);
+
             // Showing Rank
-            document.getElementById('rank').innerHTML = studentRank;
+            $("#rank").text(studentRanking);
+
+            // Display title of rows
+            $("#student-table").fadeIn("slow");
 
             // Pushing information student object to a list
             studentList.push({
                 name: name,
-                rank: studentRank,
-                gpa: studentGPA
+                rank: studentRanking,
+                gpa: studentGpa
             });
 
-            // Showing list in table
-            addRow('student-table', studentList[studentList.length - 1]);
+            // Display notification for add a new student to the table
+            $("p").animate({
+                fontSize: "15px",
+            }, "slow").fadeIn("slow").fadeOut("slow");
 
-            // Reset form
+            // Showing list in table
+            studentsAdd(name, studentRanking, studentGpa);
+
             resetForm();
 
             return student;
 
-        } catch (error) {
+        }
+        catch (error) {
             switch (error.type) {
                 case 'Empty':
                     alert(error.message);
                     break;
-                case 'Invalid':
+                case "Invalid":
                     alert(error.message);
                     break;
             }
         }
 
     });
-})
+});
 
-    // Function reset Grade Point Average form
-    function resetForm() {
-        const rowId = document.querySelectorAll("#name, #math, #phys, #chem");
+// Function reset Grade Point Average form
+function resetForm() {
+    $("input").val("");
+}
 
-        rowId.forEach(element => {
-            element.value = "";
-        });
+// Function add student to the table 
+function studentsAdd(name, rank, gpa) {
+
+    if ($("#student-table tbody").length == 0) {
+        $("#student-table").append("<tbody></tbody>");
     }
 
-    // Function add Student's information row in table
-    function addRow(tableId, studentListItem) {
-        // Get a reference to the table
-        const tableRef = document.getElementById(tableId);
+    $("#student-table tbody").append(
+        "<tr>" +
+        "<td>" + name + "</td>" +
+        "<td>" + rank + "</td>" +
+        "<td>" + gpa + "</td>" +
+        "</tr>"
+    );
+}
 
-        // Insert a row at the end of the table
-        const newRow = tableRef.insertRow(-1);
+class Validator {
 
-        // Insert a cell in the row at index 0
-        const cellName = newRow.insertCell(0);
-        const cellRank = newRow.insertCell(1);
-        const cellGPA = newRow.insertCell(2);
+    // Function checking valid student name
+    static validateName(name) {
 
-        // Append a text node to the cell
-        const newName = document.createTextNode(studentListItem.name);
-        cellName.appendChild(newName);
+        const regexName = /^[a-zA-Z ]+$/;
 
-        const newRank = document.createTextNode(studentListItem.rank);
-        cellRank.appendChild(newRank);
+        if (!name) {
+            const error = new Error("Please enter student name");
+            error.type = "Empty";
+            throw error;
+        }
 
-        const newGPA = document.createTextNode(studentListItem.gpa);
-        cellGPA.appendChild(newGPA);
+        if (!regexName.test(name)) {
+            const error = new Error("Please enter a valid student name");
+            error.type = "Invalid";
+            throw error;
+        }
     }
 
+    // Function checking valid student grade (re-use)
+    static isValidGrade(grade) {
+
+        const regexGrade = /^\d+$/;
+
+        if (!grade) {
+            return false;
+        }
+
+        if (!regexGrade.test(grade)) {
+            return false;
+        }
+
+        if (grade < 0 || grade > 10) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Function checking valid student math grade
+    static validateMathGrade(grade) {
+
+        if (!grade) {
+            const error = new Error("Please enter Math grade");
+            error.type = "Empty";
+            throw error;
+        }
+
+        if (!this.isValidGrade(grade)) {
+            const error = new Error("Please enter a valid Math grade");
+            error.type = "Invalid";
+            throw error;
+        }
+
+    }
+
+    // Function checking valid student physical grade
+    static validatePhysicalGrade(grade) {
+
+        if (!grade) {
+            const error = new Error("Please enter Physical grade");
+            error.type = "Empty";
+            throw error;
+        }
+
+        if (!this.isValidGrade(grade)) {
+            const error = new Error("Please enter a valid Physical grade");
+            error.type = "Invalid";
+            throw error;
+        }
+    }
+
+    // Function checking valid student chemistry grade
+    static validateChemistryGrade(grade) {
+
+        if (!grade) {
+            const error = new Error("Please enter Chemistry grade");
+            error.type = "Empty";
+            throw error;
+        }
+
+        if (!this.isValidGrade(grade)) {
+            const error = new Error("Please enter a valid Chemistry grade");
+            error.type = "Invalid";
+            throw error;
+        }
+
+    }
+
+}
 
 
 

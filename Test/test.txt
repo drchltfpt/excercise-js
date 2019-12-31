@@ -1,5 +1,0 @@
-
-    Test Nodejs
-    Ha test the first time
-    Ha test override
-    Ha test watchFile

@@ -7,15 +7,17 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GPA-jQuery Version</title>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./stylesheets/style.css" />
     <link href="https://fonts.googleapis.com/css?family=Sofia|Ubuntu|Dancing+Script" rel="stylesheet">
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <script type="text/javascript" src="index.js"></script>
+    <script type="text/javascript" src="./javascripts/index.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 
 <body>
     <h1>Grade Point Average</h1>
+
     <table>
 
         <tr>
@@ -49,19 +51,23 @@
             <td>
                 <button class="student-submit">Submit</button>
             </td>
+            <td>
+                <label for="file-upload" class="custom-file-upload">
+                    <i class="fa fa-cloud-upload"></i> Upload
+                </label>
+                <input id="file-upload" type="file"/>
+            </td>
         </tr>
 
     </table>
 
-    <p>A student has been added to the table</p>
-
+    <p id="notify-upload">Click Upload button to upload data from Excel</p>
+    <p id="notify-success">Upload Success !!!</p>
+    
     <table id="student-table">
-        <tr>
-            <th>Student Name</th>
-            <th>Ranking</th>
-            <th>GPA</th>
-        </tr>
+        
     </table>
+
 </body>
 
 </html>
